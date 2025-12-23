@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>MekhaeeL YasseR yackoub</title>
+<style>
+:root{
+  --blue:#0b1c2d;
+  --red:#8b1e3f;
+  --gold:#f5c451;
+  --bg:#020617;
+  --user:#2563eb;
+  --bot:#334155;
+}
+body{
+  margin:0;height:100vh;
+  background:linear-gradient(135deg,var(--blue),var(--red));
+  display:flex;align-items:center;justify-content:center;
+  font-family:system-ui;
+}
+.chat{
+  width:100%;max-width:430px;height:100%;
+  max-height:650px;background:var(--bg);
+  border-radius:16px;display:flex;flex-direction:column;
+}
+.header{
+  padding:14px;text-align:center;
+  background:linear-gradient(90deg,var(--red),var(--blue));
+  color:var(--gold);font-weight:600;
+}
+.messages{flex:1;padding:14px;overflow-y:auto}
+.msg{max-width:85%;padding:10px 14px;margin-bottom:10px;border-radius:14px}
+.user{background:var(--user);color:#fff;margin-left:auto}
+.bot{background:var(--bot);color:#e5e7eb;margin-right:auto}
+.input{padding:12px;border-top:1px solid #111827}
+input{
+  width:100%;padding:12px;border-radius:10px;
+  background:#020617;border:1px solid #1e293b;color:#fff
+}
+</style>
+</head>
+
+<body>
+<div class="chat">
+  <div class="header">🔵🔴 MekhaeeL YasseR yackoub AI 🟡</div>
+  <div class="messages" id="messages">
+    <div class="msg bot">أهلًا 👋 أنا ذكاء MekhaeeL بروح برشلونة ⚽🧠</div>
+  </div>
+  <div class="input">
+    <input id="input" placeholder="اكتب سؤالك واضغط Enter">
+  </div>
+</div>
+
+<script>
+const input=document.getElementById("input");
+const messages=document.getElementById("messages");
+input.addEventListener("keypress",async e=>{
+  if(e.key==="Enter"){
+    const t=input.value.trim(); if(!t) return;
+    messages.innerHTML+=`<div class="msg user">${t}</div>`;
+    input.value="";
+    const r=await fetch("/chat",{method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({message:t})});
+    const d=await r.json();
+    if(d.paywall){
+      messages.innerHTML+=`<div class="msg bot">❌ انتهت المجانية — اشترك 💳</div>`;
+    }else{
+      messages.innerHTML+=`<div class="msg bot">${d.reply}</div>`;
+    }
+    messages.scrollTop=messages.scrollHeight;
+  }
+});
+</script>
+</body>
+</html>
